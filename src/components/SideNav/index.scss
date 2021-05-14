@@ -1,1 +1,110 @@
 @import 'assets/master';
+.container {
+  display: flex;
+  flex-direction: row;
+  .nav-wrapper {
+    width: 280px;
+    min-height: 100vh;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background-color: $foreground-color;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    .dropdown {
+      margin: 1em auto;
+      height: 2em;
+      width: 260px;
+      .labelCont {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        justify-content: space-between;
+        .menuItem {
+          display: flex;
+          flex-direction: row;
+          justify-content: flex-start;
+          span {
+            display: flex;
+            flex-direction: column;
+            margin: auto 10px auto 3px;
+          }
+        }
+        .menuItemCount {
+          border-radius: 50px;
+          font-size: 10px;
+          width: 20px;
+          height: 20px;
+          text-align: center;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          background-color: rgba(255, 159, 67, 0.12);
+          color: #ff9f43;
+        }
+      }
+    }
+    .category {
+      margin: 1em auto;
+      width: 260px;
+
+      .categoryName {
+        color: $icons;
+        padding: 2px 8px;
+      }
+
+      .menuItemContainer {
+        margin: 1em auto;
+        width: 260px;
+        cursor: pointer;
+        div {
+          padding: 2px 8px;
+          width: 100%;
+          display: flex;
+          flex-direction: row;
+          .itemsLeft {
+            margin: auto 15px auto 3px;
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            width: 75%;
+            :first-child {
+              margin: auto 5px auto 0px;
+            }
+          }
+          .itemsRight {
+            width: 25%;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            .new {
+              width: 3em;
+              height: 100%;
+              border-radius: 7px;
+              font-size: 0.8em;
+              background-color: rgba(40, 199, 112, 0.12);
+              color: #28c76f;
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+
+              text-align: center;
+            }
+          }
+          .iconWrapper {
+            display: flex;
+            flex-direction: column;
+          }
+        }
+      }
+    }
+  }
+}
+@media only screen and (max-width: 768px) {
+  .container {
+    .nav-wrapper {
+      display: none;
+    }
+  }
+}

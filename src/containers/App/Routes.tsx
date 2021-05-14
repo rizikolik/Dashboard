@@ -5,12 +5,9 @@ import SideNav from 'components/SideNav';
 function Routes() {
   return (
     <Router>
-      <div style={{ width: '100%', display: 'flex', flexDirection: 'row' }}>
-        <SideNav />
         <Switch>
-          <Route exact path='/' component={Home} />
+          <Route exact path='/' render={(props)=><SideNav {...props} Component={<Home />}  />}  />
         </Switch>
-      </div>
     </Router>
   );
 }
