@@ -12,13 +12,33 @@ import {
   FiMenu,
 } from 'react-icons/fi';
 
-//Local Imports
+//Hooks
 import useWindowSize from 'hooks/useWindowSize';
+import { useAppSelector, useAppDispatch } from 'hooks/reduxHooks';
+
+//Selectors,Reducers
+import {
+  selectItems,
+  selectCount,
+  addItem,
+  increaseItem,
+  decreaseItem,
+  removeItem,
+  incrementByAmount,
+} from 'redux/slicers/cart';
 
 //Styles
 import styles from './index.module.scss';
+
+interface Item {
+  price: number;
+  name: string;
+  count: number;
+}
 const Header = ({ ...props }) => {
   const [search, setSearch] = useState<string>('');
+  const items = useAppSelector(selectItems);
+  const count=useAppSelector(selectCount);
 
   //Show Menu Icon When Window Resizes
 
@@ -27,7 +47,10 @@ const Header = ({ ...props }) => {
   const [width] = useWindowSize();
 
   // Callbacks
-
+  const dispatch = useAppDispatch();
+  const handleIncrement = () => {
+    dispatch(addItem({ name: 'Itemmm', price: 40, count: 1 }));
+  };
   const handleChange = useCallback((e: React.FormEvent<HTMLInputElement>) => {
     e.preventDefault();
     setSearch(e.currentTarget.value);
@@ -90,9 +113,15 @@ const Header = ({ ...props }) => {
             </span>
           </div>
           <div className={styles.rightIconWrapper}>
-            <span className={styles.cartCounter}>
+            <span
+              className={styles.cartCounter}
+              onClick={() => {
+                handleIncrement();
+                console.log(count, 'hre selected items');
+              }}
+            >
               <FiShoppingCart />
-              <span>4</span>
+              <span>{count}</span>
             </span>
             <span className={styles.iconWrapper}>
               <FiBell />

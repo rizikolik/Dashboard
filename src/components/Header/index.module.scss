@@ -51,16 +51,17 @@
       margin-bottom: auto;
       cursor: pointer;
       :nth-child(2) {
-        height: 1em;
-        width: 1em;
+        height: 1.5em;
+        width: 1.5em;
         border-radius: 1em;
         font-size: 0.8em;
         background: #7367f0;
         margin-left: -0.4em;
-        margin-top: -0.4em;
+        margin-top: -0.8em;
         display: flex;
         flex-direction: column;
         justify-content: center;
+        font-weight: 500;
       }
     }
   }
