@@ -2,7 +2,8 @@
 .container {
   display: flex;
   flex-direction: row;
-  .nav-wrapper {
+  .nav-wrapper,
+  .mobile {
     width: 280px;
     min-height: 100vh;
     top: 0;
@@ -100,11 +101,7 @@
       }
     }
   }
-}
-@media only screen and (max-width: 768px) {
-  .container {
-    .nav-wrapper {
-      display: none;
-    }
+  .mobile {
+    position: absolute;
   }
 }

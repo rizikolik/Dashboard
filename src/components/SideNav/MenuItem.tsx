@@ -1,5 +1,5 @@
 import React, { FC, ReactNode } from 'react';
-
+import styles from './index.module.scss';
 type MenuItemProps = {
   icon: ReactNode;
   name: string;
@@ -9,15 +9,15 @@ type MenuItemProps = {
 
 const MenuItem: FC<MenuItemProps> = ({ icon, name, chip, linkIcon }) => {
   return (
-    <div className='menuItemContainer'>
+    <div className={styles.menuItemContainer}>
       <div>
-        <span className='itemsLeft'>
-          <span className='iconWrapper'>{icon}</span>
+        <span className={styles.itemsLeft}>
+          <span className={styles.iconWrapper}>{icon}</span>
           <span>{name}</span>
         </span>
-        <span className='itemsRight'>
-          <span className='iconWrapper'>{chip}</span>
-          <span className='iconWrapper'>{linkIcon}</span>
+        <span className={styles.itemsRight}>
+          <span className={styles.iconWrapper}>{chip}</span>
+          <span className={styles.iconWrapper}>{linkIcon}</span>
         </span>
       </div>
     </div>
