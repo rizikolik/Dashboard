@@ -94,7 +94,7 @@ const SideNav: FC<SideNavProps> = ({ Component }) => {
   return (
     <div className={styles.container}>
       {showMenu && (
-        <div className={ isMobile ? styles.mobile : styles['nav-wrapper']}>
+        <div className={isMobile ? styles.mobile : styles['nav-wrapper']}>
           <div className={styles.dropdown}>
             <StyledSelect options={options} />
           </div>
