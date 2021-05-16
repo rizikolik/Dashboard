@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-
+import { FiX } from 'react-icons/fi';
 //Interfaces
 import { Item } from 'redux/slicers/cart';
 //Styles
@@ -8,10 +8,16 @@ import styles from './index.module.scss';
 type CartItemProps = {
   onIncrease: () => void;
   onDecrease: () => void;
+  onRemove: () => void;
   item: Item;
 };
 
-const CartItem: FC<CartItemProps> = ({ onIncrease, onDecrease, item }) => {
+const CartItem: FC<CartItemProps> = ({
+  onIncrease,
+  onDecrease,
+  onRemove,
+  item,
+}) => {
   return (
     <div className={styles.container}>
       <div className={styles.itemName}>{item.name}</div>
@@ -22,6 +28,11 @@ const CartItem: FC<CartItemProps> = ({ onIncrease, onDecrease, item }) => {
         <span className={styles.itemCount}>{item.count}</span>
         <span className={styles.positive} onClick={onIncrease}>
           +
+        </span>
+      </div>
+      <div className={styles.removeWrapper}>
+        <span className={styles.removeIcon} onClick={onRemove}>
+          <FiX />
         </span>
       </div>
       <div className={styles.totalItemPrice}>

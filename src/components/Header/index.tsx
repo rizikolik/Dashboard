@@ -16,25 +16,16 @@ import CartItems from 'components/CartItems';
 
 //Hooks
 import useWindowSize from 'hooks/useWindowSize';
-import { useAppSelector, useAppDispatch } from 'hooks/reduxHooks';
+import { useAppSelector } from 'hooks/reduxHooks';
 
 //Selectors,Reducers
-import {
-  selectItems,
-  selectCount,
-  addItem,
-  increaseItem,
-  decreaseItem,
-  removeItem,
-  incrementByAmount,
-} from 'redux/slicers/cart';
+import { selectCount } from 'redux/slicers/cart';
 
 //Styles
 import styles from './index.module.scss';
 
 const Header = ({ ...props }) => {
   const [search, setSearch] = useState<string>('');
-  const items = useAppSelector(selectItems);
   const count = useAppSelector(selectCount);
 
   //Show Menu Icon When Window Resizes
@@ -45,10 +36,7 @@ const Header = ({ ...props }) => {
   const [width] = useWindowSize();
 
   // Callbacks
-  const dispatch = useAppDispatch();
-  const handleIncrement = () => {
-    dispatch(addItem({ name: 'Itemmm', price: 40, count: 1 }));
-  };
+
   const handleChange = useCallback((e: React.FormEvent<HTMLInputElement>) => {
     e.preventDefault();
     setSearch(e.currentTarget.value);
@@ -88,7 +76,7 @@ const Header = ({ ...props }) => {
           <FiCheckSquare />
         </span>
         <span className={styles.iconWrapper}>
-          <FiStar />
+          <FiStar color={'#ff9f43'} />
         </span>
       </div>
       {showMenu && (
@@ -115,9 +103,7 @@ const Header = ({ ...props }) => {
             <span
               className={styles.cartCounter}
               onClick={() => {
-                handleIncrement();
-                setCartVisible(true);
-                console.log(count, 'hre selected items');
+                setCartVisible(!cartVisible);
               }}
             >
               <FiShoppingCart />

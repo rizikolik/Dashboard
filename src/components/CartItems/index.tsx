@@ -1,10 +1,11 @@
-import React, { FC } from 'react';
+import React, { FC, useRef, useState } from 'react';
+import classNames from 'classnames';
 
 //Interface
 import { Item } from 'redux/slicers/cart';
 //Hooks
 import { useAppSelector, useAppDispatch } from 'hooks/reduxHooks';
-
+import useOnClickOutside from 'hooks/useOnClickOutside';
 import CartItem from 'components/CartItem';
 //Selectors,Reducers
 import {
@@ -25,9 +26,11 @@ type CartItemsProps = {
 
 const CartItems: FC<CartItemsProps> = ({ visibility }) => {
   const dispatch = useAppDispatch();
+  const cartRef = useRef<HTMLHeadingElement>(null);
   const items = useAppSelector(selectItems);
   const count = useAppSelector(selectCount);
   const total = useAppSelector(selectTotalAmount);
+  const [showCart, setShowCart] = useState<boolean>(visibility);
 
   const handleIncrement = (item: Item) => {
     dispatch(increaseItem(item));
@@ -37,17 +40,31 @@ const CartItems: FC<CartItemsProps> = ({ visibility }) => {
       ? dispatch(removeItem(item))
       : dispatch(decreaseItem(item));
   };
+  const handleRemove = (item: Item) => {
+    dispatch(removeItem(item));
+  };
   const handleCheckout = () => {
+    console.log('here.');
     dispatch(resetCart());
   };
-  if (!visibility) {
+
+  // Function for Closing the Cart When user Click to anywhere else in the Page
+  const handleClickOutside = () => {
+    setShowCart(false);
+  };
+
+  useOnClickOutside(cartRef, handleClickOutside);
+
+  if (!showCart) {
     return null;
   }
   return (
-    <div className={styles.cartItemsContainer}>
+    <div className={styles.cartItemsContainer} ref={cartRef}>
       <div className={styles.listHeader}>
         <span className={styles.myCard}>My Cart</span>
-        <span className={styles.topCounter}>{count} Items</span>
+        {count && count > 0 ? (
+          <span className={styles.topCounter}>{count} Items</span>
+        ) : null}
       </div>
       <div className={styles.cartItemWrapper}>
         {items && items.length > 0
@@ -58,6 +75,7 @@ const CartItems: FC<CartItemsProps> = ({ visibility }) => {
                   item={item}
                   onDecrease={() => handleDecrement(item)}
                   onIncrease={() => handleIncrement(item)}
+                  onRemove={() => handleRemove(item)}
                 />
               );
             })
@@ -67,9 +85,16 @@ const CartItems: FC<CartItemsProps> = ({ visibility }) => {
         <span>Total:</span>
         <span className={styles.totalAmount}>${total?.toFixed(2)}</span>
       </div>
-      <div className={styles.checkout} onClick={handleCheckout}>
+      <button
+        className={classNames(
+          styles.checkout,
+          total <= 0 ? styles.disabledButton : null
+        )}
+        onClick={handleCheckout}
+        disabled={total <= 0}
+      >
         Checkout
-      </div>
+      </button>
     </div>
   );
 };

@@ -1,14 +1,43 @@
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
 import classNames from 'classnames';
+
+//Interface
+import { Item } from 'redux/slicers/cart';
 
 //Local Imports
 
 import Header from 'components/Header';
 
+//Hooks
+import { useAppDispatch } from 'hooks/reduxHooks';
+
+//Apis
+import getItems from 'api/getItems';
+//Selectors,Reducers
+import { addItem } from 'redux/slicers/cart';
+
 //Styles
 import styles from './index.module.scss';
 
 const Home = ({ ...props }) => {
+  const dispatch = useAppDispatch();
+
+  //CallBack
+  const handleGetItems = useCallback(async () => {
+    try {
+      const results = await getItems();
+      results?.shopping_cart_items?.forEach((ele: Item) => {
+        dispatch(addItem(ele));
+      });
+    } catch (error) {
+      console.log(error, 'Fetch Items from Server Error ');
+    }
+  }, [dispatch]);
+  //Effect
+
+  useEffect(() => {
+    handleGetItems();
+  }, [handleGetItems]);
   return (
     <div className={styles.home}>
       <Header onClick={props.handleClick} />
