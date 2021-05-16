@@ -1,0 +1,70 @@
+@import 'assets/master';
+
+.container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  height: 5em;
+  border-bottom: 0.5px inset #555555;
+  padding: 0px 20px;
+  &:hover {
+    background-color: #161d31;
+  }
+  .itemName {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: left;
+    font-size: 1.1em;
+  }
+  .updateIcons {
+    width: 20%;
+    border: 1px solid #555555;
+    border-radius: 5px;
+    display: flex;
+    margin: auto;
+    height: 2.5em;
+    font-size: 0.8em;
+    background-color: $foreground-color;
+    .itemCount {
+      width: 60%;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .negative {
+      height: 0.8em;
+      margin: auto;
+      cursor: pointer;
+      width: 2em;
+      border-right: 1px solid #555555;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      font-size: 2em;
+    }
+    .positive {
+      height: 0.8em;
+      margin: auto;
+      cursor: pointer;
+      width: 2em;
+      border-left: 1px solid #555555;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      font-size: 2em;
+    }
+  }
+  .totalItemPrice {
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-size: 1.1em;
+    text-align: right;
+  }
+}
