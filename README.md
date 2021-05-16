@@ -19,7 +19,7 @@ You must have the Node.js and npm installed before this steps.For more[Node.js](
 
 ```
 
-$ git clone git@bitbucket.org:rizikolik/
+$ git clone  git@bitbucket.org:rizikolik/dashboard.git
 
 $ cd dashboard
 
@@ -47,7 +47,7 @@ Now its ready at your configured port or at http://localhost:3000
 
 ### Deployment
 
-Deployed on Netlify [@netlify](https://.netlify.app/)
+Deployed on Netlify [@netlify](https://dashboard-app-ecommerce.netlify.app/)
 
 ## Author
 
