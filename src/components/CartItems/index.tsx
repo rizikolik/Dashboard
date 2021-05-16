@@ -1,5 +1,6 @@
 import React, { FC, useRef, useState } from 'react';
 import classNames from 'classnames';
+import { toast } from 'react-toastify';
 
 //Interface
 import { Item } from 'redux/slicers/cart';
@@ -44,7 +45,7 @@ const CartItems: FC<CartItemsProps> = ({ visibility }) => {
     dispatch(removeItem(item));
   };
   const handleCheckout = () => {
-    console.log('here.');
+    notify(total);
     dispatch(resetCart());
   };
 
@@ -54,6 +55,22 @@ const CartItems: FC<CartItemsProps> = ({ visibility }) => {
   };
 
   useOnClickOutside(cartRef, handleClickOutside);
+  const notify = (total: number) =>
+    toast.success(
+      <span style={{ color: '#fff' }}>
+        {' '}
+        Transaction of <strong>${total}</strong> completed Successfully !
+      </span>,
+      {
+        position: 'top-center',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      }
+    );
 
   if (!showCart) {
     return null;
