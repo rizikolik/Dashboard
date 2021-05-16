@@ -59,7 +59,8 @@ const CartItems: FC<CartItemsProps> = ({ visibility }) => {
     toast.success(
       <span style={{ color: '#fff' }}>
         {' '}
-        Transaction of <strong>${total}</strong> completed Successfully !
+        Transaction of <strong>${total ? total.toFixed(2) : 0}</strong>
+        completed Successfully !
       </span>,
       {
         position: 'top-center',
