@@ -13,13 +13,12 @@
 
 #### Installation Instructions
 
-You must have the Node.js and npm installed before this steps.For more[Node.js](https://nodejs.org/en/download/) <br/s>
-
+You must have the Node.js and npm installed before this steps.For more[Node.js](https://nodejs.org/en/download/) 
 - Clone the Repo:
 
 ```
 
-$ git clone  git@bitbucket.org:rizikolik/dashboard.git
+$ git clone  git@github.com:rizikolik/Dashboard.git
 
 $ cd dashboard
 
