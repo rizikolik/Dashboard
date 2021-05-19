@@ -2,16 +2,16 @@
 
 <br>
 <p style="display:flex;flex-direction:row;margin-bottom:50px">
-<img alt="main" src=".src/assets/1.png"  width="95%" height="300px" style="margin-right:20px"/>
+<img alt="main" src="./src/assets/1.png"  width="95%" height="300px" style="margin-right:20px"/>
 </p>
 <p style="display:flex;flex-direction:row;margin-bottom:50px">
-<img alt="main" src=".src/assets/2.png" width="95%" height="300px" style="margin-right:20px"/>
+<img alt="main" src="./src/assets/2.png" width="95%" height="300px" style="margin-right:20px"/>
 </p>
 <p style="display:flex;flex-direction:row;margin-bottom:50px">
-<img alt="main" src=".src/assets/3.png"  width="95%"height="300px" style="margin-right:20px"/>
+<img alt="main" src="./src/assets/3.png"  width="95%"height="300px" style="margin-right:20px"/>
 </p>
 <p style="display:flex;flex-direction:row;margin-bottom:50px">
-<img alt="main" src=".src/assets/4.png" width="95%" height="300px"/>
+<img alt="main" src="./src/assets/4.png" width="95%" height="300px"/>
 </p>
 
 <details open="open">
