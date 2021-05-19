@@ -2,16 +2,14 @@
 
 <br>
 <p style="display:flex;flex-direction:row;margin-bottom:50px">
-<img alt="main" src="./src/assets/1.png"  width="95%" height="300px" style="margin-right:20px"/>
+<img alt="main" src="./src/assets/1.png"  width="65%" height="auto" style="margin-right:20px"/>
+<img alt="main" src="./src/assets/2.png" width="25%" height="auto" style="margin-right:20px"/>
+
 </p>
 <p style="display:flex;flex-direction:row;margin-bottom:50px">
-<img alt="main" src="./src/assets/2.png" width="95%" height="300px" style="margin-right:20px"/>
-</p>
-<p style="display:flex;flex-direction:row;margin-bottom:50px">
-<img alt="main" src="./src/assets/3.png"  width="95%"height="300px" style="margin-right:20px"/>
-</p>
-<p style="display:flex;flex-direction:row;margin-bottom:50px">
-<img alt="main" src="./src/assets/4.png" width="95%" height="300px"/>
+<img alt="main" src="./src/assets/3.png"  width="25%" min-height="300px" style="margin-right:20px"/>
+<img alt="main" src="./src/assets/4.png" width="65%" min-height="300px"/>
+
 </p>
 
 <details open="open">
@@ -40,7 +38,7 @@
 
 ## About the Project
 
-### Main Dashboard for a Ecommerce Project 
+### Main Dashboard for a Ecommerce Project
 
 ## Stack and Tools:
 
@@ -93,7 +91,6 @@ $ npm start
 ```
 
 Now its ready at your configured port or at http://localhost:3000
-
 
 ## Deployment
 
