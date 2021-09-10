@@ -1,9 +1,5 @@
 <h2  align="center">Dasboard Template</h2>
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/532b2a73-28f7-443b-8a3c-7f34d9b3c6fe/deploy-status)](https://app.netlify.com/sites/dashboard-app-ecommerce/deploys)
-
-
-
 <br>
 <p style="display:flex;flex-direction:row;margin-bottom:50px">
 <img alt="main" src="./src/assets/1.png"  width="65%" height="auto" style="margin-right:20px"/>
