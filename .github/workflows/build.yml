@@ -128,7 +128,7 @@ jobs:
           percentage: 50
           exit: 0
           rounded-precision: 2
-          filename: 'app/coverage/clover.xml'
+          filename: 'coverage/coverage-summary.json'
 
   test:
     name: Tests waiter
