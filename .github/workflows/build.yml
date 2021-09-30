@@ -82,9 +82,6 @@ jobs:
         if: ${{ !contains(github.event.head_commit.message, '#no-publish') && (( github.event_name == 'pull_request' && github.event.pull_request.merged == true ) || github.ref == 'refs/heads/master' ) }}
         with:
           name: built-app
-          path: docs
-          if-no-files-found: error
-          retention-days: 5
 
   test-code:
     name: Test code and generate test coverage value
