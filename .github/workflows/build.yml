@@ -1,3 +1,11 @@
+  
+name: Deploy app and add badge
+
+on:
+    push:
+        branches:
+            - master
+
 jobs:
     build:
         runs-on: ubuntu-latest
