@@ -282,12 +282,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Download built app from artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: built-app
-          path: docs
-
       - name: Deploy to GitHub Pages
         uses: crazy-max/ghaction-github-pages@v2
         with:
