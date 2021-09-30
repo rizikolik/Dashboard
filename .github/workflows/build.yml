@@ -22,7 +22,6 @@ jobs:
                   registry-url: 'https://npm.pkg.github.com'
             - name: install dependencies
               run: yarn install
-            - name: run linting
             - name: run tests
               run: yarn test
             - name: run coneverage
