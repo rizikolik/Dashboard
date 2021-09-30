@@ -1,22 +1,13 @@
 # This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: Build CI
+name: Node.js CI
 
 on:
   push:
-    branches: [master]
-    paths-ignore:
-      # Can we use '**.md' ?
-      - 'README.md'
-      - 'SECURITY.md'
-      - 'CONTRIBUTING.md'
-      - 'CODE_OF_CONDUCT.md'
-      - 'app/README.md'
-      - 'LICENSE'
-      - '.gitignore'
+    branches: [ master ]
   pull_request:
-    branches: [master]
+    branches: [ master ]
 
 jobs:
   pre_ci:
@@ -27,75 +18,83 @@ jobs:
       branch: ${{ steps.extract_branch.outputs.branch }}
 
     steps:
-      - name: Checkout Project
-        uses: actions/checkout@v2
-        with:
-          # We need to fetch with a depth of 2 for pull_request so we can do HEAD^2
-          fetch-depth: 2
 
-      - name: 'Get commit message'
-        id: get_commit_message
-        env:
-          COMMIT_PUSH: ${{ github.event.head_commit.message }}
-        run: |
-          COMMIT_MESSAGE="${COMMIT_PUSH:-$(git log --format=%B -n 1 HEAD^2)}"
-          echo "::set-output name=commit_message::${COMMIT_MESSAGE}"
+    - name: Checkout Project
+      uses: actions/checkout@v2
+      with:
+        # We need to fetch with a depth of 2 for pull_request so we can do HEAD^2
+        fetch-depth: 2
 
-      - name: Extract branch name
-        id: extract_branch
-        run: |
-          TMP_PULL_HEAD_REF="${{ github.head_ref }}"
-          TMP_GITHUB_REF="${GITHUB_REF#refs/heads/}"
-          EXPORT_VALUE=""
-          if [ "${TMP_PULL_HEAD_REF}" != "" ]
-          then
-              EXPORT_VALUE="${TMP_PULL_HEAD_REF}"
-          else
-              EXPORT_VALUE="${TMP_GITHUB_REF}"
-          fi
-          echo "##[set-output name=branch;]${EXPORT_VALUE}"
+    - name: "Get commit message"
+      id: get_commit_message
+      env:
+        COMMIT_PUSH: ${{ github.event.head_commit.message }}
+      run: |
+        COMMIT_MESSAGE="${COMMIT_PUSH:-$(git log --format=%B -n 1 HEAD^2)}"
+        echo "::set-output name=commit_message::${COMMIT_MESSAGE}"
+
+    - name: Extract branch name
+      id: extract_branch
+      run: |
+        TMP_PULL_HEAD_REF="${{ github.head_ref }}"
+        TMP_GITHUB_REF="${GITHUB_REF#refs/heads/}"
+        EXPORT_VALUE=""
+        if [ "${TMP_PULL_HEAD_REF}" != "" ]
+        then
+            EXPORT_VALUE="${TMP_PULL_HEAD_REF}"
+        else
+            EXPORT_VALUE="${TMP_GITHUB_REF}"
+        fi
+        echo "##[set-output name=branch;]${EXPORT_VALUE}"
 
   test-build:
+
     name: Build
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [14.x]
+        node-version: [12.x]
 
     steps:
-      - uses: actions/checkout@v2
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2.4.1
-        with:
-          node-version: ${{ matrix.node-version }}
+    - uses: actions/checkout@v2
 
-      - name: Manage cache
-        uses: actions/cache@v2.1.6
-        with:
-          path: |
-            app/node_modules
-          key: ${{ runner.OS }}-build-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('.github/workflows/*.yml') }}
-          restore-keys: |
-            ${{ runner.OS }}-build-${{ hashFiles('**/yarn.lock') }}
-            ${{ runner.OS }}-build
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2.4.1
+      with:
+        node-version: ${{ matrix.node-version }}
 
-      - name: yarn install and build
-        working-directory: ./app
-        run: |
-          yarn build
+    - name: Manage cache
+      uses: actions/cache@v2.1.6
+      with:
+        path: |
+          app/node_modules
+        key: ${{ runner.OS }}-build-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('.github/workflows/*.yml') }}
+        restore-keys: |
+          ${{ runner.OS }}-build-${{ hashFiles('**/yarn.lock') }}
+          ${{ runner.OS }}-build
 
-      - uses: actions/upload-artifact@v2
-        # Same condition as `publish`job
-        if: ${{ !contains(github.event.head_commit.message, '#no-publish') && (( github.event_name == 'pull_request' && github.event.pull_request.merged == true ) || github.ref == 'refs/heads/master' ) }}
-        with:
-          name: built-app
-          path: docs
-          if-no-files-found: error
-          retention-days: 5
+    - name: yarn install and build
+      env:
+        REACT_APP_MAP_STATIC_HOST: https://emibcn.github.io/covid-data/Maps
+        REACT_APP_CHART_STATIC_HOST: https://emibcn.github.io/covid-data/Charts
+      working-directory: ./app
+      run: |
+        yarn --color --immutable
+        yarn build
+
+    - uses: actions/upload-artifact@v2
+      # Same condition as `publish`job
+      if: ${{ !contains(github.event.head_commit.message, '#no-publish') && (( github.event_name == 'pull_request' && github.event.pull_request.merged == true ) || github.ref == 'refs/heads/master' ) }}
+      with:
+        name: built-app
+        path: docs
+        if-no-files-found: error
+        retention-days: 5
 
   test-code:
+
     name: Test code and generate test coverage value
     runs-on: ubuntu-latest
 
@@ -109,39 +108,39 @@ jobs:
       coverage-rounded-display: ${{ steps.coverage.outputs.coverage-rounded-display }}
 
     steps:
-      - uses: actions/checkout@v2
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2.4.1
-        with:
-          node-version: ${{ matrix.node-version }}
+    - uses: actions/checkout@v2
 
-      - name: Manage cache
-        uses: actions/cache@v2.1.6
-        with:
-          path: |
-            app/node_modules
-          key: ${{ runner.OS }}-build-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('.github/workflows/*.yml') }}
-          restore-keys: |
-            ${{ runner.OS }}-build-${{ hashFiles('**/yarn.lock') }}
-            ${{ runner.OS }}-build
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2.4.1
+      with:
+        node-version: ${{ matrix.node-version }}
 
-      - name: yarn install and test
-        working-directory: ./app
-        run: |
-          yarn --color --immutable
-          yarn test --color --coverage
+    - name: Manage cache
+      uses: actions/cache@v2.1.6
+      with:
+        path: |
+          app/node_modules
+        key: ${{ runner.OS }}-build-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('.github/workflows/*.yml') }}
+        restore-keys: |
+          ${{ runner.OS }}-build-${{ hashFiles('**/yarn.lock') }}
+          ${{ runner.OS }}-build
 
-      # Coverage badges will be updated on any branch
-      # and saved into a dedicated one
-      - name: Check test coverage
-        uses: johanvanhelden/gha-clover-test-coverage-check@v1
-        id: coverage
-        with:
-          percentage: 50
-          exit: 0
-          rounded-precision: 2
-          filename: 'app/coverage/clover.xml'
+    - name: yarn install and test
+      run: |
+        yarn --color --immutable
+        yarn test --color --coverage
+
+    # Coverage badges will be updated on any branch
+    # and saved into a dedicated one
+    - name: Check test coverage
+      uses: johanvanhelden/gha-clover-test-coverage-check@v1
+      id: coverage
+      with:
+        percentage: 50
+        exit: 0
+        rounded-precision: 2
+        filename: "app/coverage/clover.xml"
 
   test:
     name: Tests waiter
@@ -151,13 +150,13 @@ jobs:
       coverage: ${{ needs.test-code.outputs.coverage }}
       coverage-rounded-display: ${{ needs.test-code.outputs.coverage-rounded-display }}
     steps:
-      - name: Check test coverage
-        env:
-          COVERAGE: ${{ needs.test-code.outputs.coverage }}
-          COVERAGE_ROUNDED: ${{ needs.test-code.outputs.coverage-rounded-display }}
-        run: |
-          echo "Coverage: ${COVERAGE}"
-          echo "Coverage Rounded: ${COVERAGE_ROUNDED}"
+    - name: Check test coverage
+      env:
+        COVERAGE: ${{ needs.test-code.outputs.coverage }}
+        COVERAGE_ROUNDED: ${{ needs.test-code.outputs.coverage-rounded-display }}
+      run: |
+        echo "Coverage: ${COVERAGE}"
+        echo "Coverage Rounded: ${COVERAGE_ROUNDED}"
 
   comment_pr:
     name: Comment on PR with test coverage value
@@ -167,20 +166,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Generate comment file with test coverage
-        env:
-          COVERAGE: ${{ needs.test.outputs.coverage-rounded-display }}
-        run: |
-          echo "**Test coverage: ${COVERAGE}**" > output.md
+    - name: Generate comment file with test coverage
+      env:
+        COVERAGE: ${{ needs.test.outputs.coverage-rounded-display }}
+      run: |
+        echo "**Test coverage: ${COVERAGE}**" > output.md
 
-      - name: Comment PR with test coverage
-        uses: machine-learning-apps/pr-comment@1.0.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          path: output.md
+    - name: Comment PR with test coverage
+      uses: machine-learning-apps/pr-comment@1.0.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        path: output.md
 
   badge:
+
     # Only generate and publish if these conditions are met:
     # - The test step ended successfully
     # - One of these is met:
@@ -196,65 +196,66 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-        with:
-          ref: badges
-          path: badges
 
-      # Use the output from the `coverage` step
-      - name: Generate the badge SVG image
-        uses: emibcn/badge-action@v1.2.4
-        id: badge
-        with:
-          label: 'Coverage'
-          status: ${{ needs.test.outputs.coverage-rounded-display }}
-          color: ${{
-            needs.test.outputs.coverage > 90 && 'green'              ||
-            needs.test.outputs.coverage > 80 && 'yellow,green'       ||
-            needs.test.outputs.coverage > 70 && 'yellow'             ||
-            needs.test.outputs.coverage > 60 && 'orange,yellow'      ||
-            needs.test.outputs.coverage > 50 && 'orange'             ||
-            needs.test.outputs.coverage > 40 && 'red,orange'         ||
-            needs.test.outputs.coverage > 30 && 'red,red,orange'     ||
-            needs.test.outputs.coverage > 20 && 'red,red,red,orange' ||
-            'red' }}
-          path: badges/test-coverage.svg
+    - uses: actions/checkout@v2
+      with:
+        ref: badges
+        path: badges
 
-      - name: Commit badge
-        env:
-          BRANCH: ${{ needs.pre_ci.outputs.branch }}
-          FILE: 'test-coverage.svg'
-        working-directory: ./badges
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          mkdir -p "${BRANCH}"
-          mv "${FILE}" "${BRANCH}"
-          git add "${BRANCH}/${FILE}"
+    # Use the output from the `coverage` step
+    - name: Generate the badge SVG image
+      uses: emibcn/badge-action@v1.2.4
+      id: badge
+      with:
+        label: 'Coverage'
+        status: ${{ needs.test.outputs.coverage-rounded-display }}
+        color: ${{
+          needs.test.outputs.coverage > 90 && 'green'              ||
+          needs.test.outputs.coverage > 80 && 'yellow,green'       ||
+          needs.test.outputs.coverage > 70 && 'yellow'             ||
+          needs.test.outputs.coverage > 60 && 'orange,yellow'      ||
+          needs.test.outputs.coverage > 50 && 'orange'             ||
+          needs.test.outputs.coverage > 40 && 'red,orange'         ||
+          needs.test.outputs.coverage > 30 && 'red,red,orange'     ||
+          needs.test.outputs.coverage > 20 && 'red,red,red,orange' ||
+          'red' }}
+        path: badges/test-coverage.svg
 
-          # Will give error if badge did not changed
-          git commit -m "Add/Update badge" || true
+    - name: Commit badge
+      env:
+        BRANCH: ${{ needs.pre_ci.outputs.branch }}
+        FILE: 'test-coverage.svg'
+      working-directory: ./badges
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        mkdir -p "${BRANCH}"
+        mv "${FILE}" "${BRANCH}"
+        git add "${BRANCH}/${FILE}"
 
-      - name: Push badge commit
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: badges
-          directory: badges
+        # Will give error if badge did not changed
+        git commit -m "Add/Update badge" || true
 
-      - name: Badge image URL
-        id: url
-        env:
-          BRANCH: ${{ needs.pre_ci.outputs.branch }}
-          FILE: 'test-coverage.svg'
-          COVERAGE: ${{ needs.test.outputs.coverage-rounded-display }}
-        run: |
-          URL="https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/badges/${BRANCH}/${FILE}"
-          MARKDOWN="![Coverage ${COVERAGE}](${URL})"
-          echo "Badge URL: ${URL}"
-          echo "Badge image for Markdown: ${MARKDOWN}"
-          echo "##[set-output name=url;]${URL}"
-          echo "##[set-output name=markdown;]${MARKDOWN}"
+    - name: Push badge commit
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: badges
+        directory: badges
+
+    - name: Badge image URL
+      id: url
+      env:
+        BRANCH: ${{ needs.pre_ci.outputs.branch }}
+        FILE: 'test-coverage.svg'
+        COVERAGE: ${{ needs.test.outputs.coverage-rounded-display }}
+      run: |
+        URL="https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/badges/${BRANCH}/${FILE}"
+        MARKDOWN="![Coverage ${COVERAGE}](${URL})"
+        echo "Badge URL: ${URL}"
+        echo "Badge image for Markdown: ${MARKDOWN}"
+        echo "##[set-output name=url;]${URL}"
+        echo "##[set-output name=markdown;]${MARKDOWN}"
 
   comment_pr_badge:
     name: Comment on PR with generated badge
@@ -264,21 +265,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Generate comment file with test coverage badge
-        env:
-          BADGE: ${{ needs.badge.outputs.markdown }}
-        run: |
-          echo "Badge: ${BADGE}"
-          echo "${BADGE}" > output.md
+    - name: Generate comment file with test coverage badge
+      env:
+        BADGE: ${{ needs.badge.outputs.markdown }}
+      run: |
+        echo "Badge: ${BADGE}"
+        echo "${BADGE}" > output.md
 
-      - name: Comment PR with test coverage badge
-        uses: machine-learning-apps/pr-comment@1.0.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          path: output.md
+    - name: Comment PR with test coverage badge
+      uses: machine-learning-apps/pr-comment@1.0.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        path: output.md
 
   publish:
+
     # Only generate and publish if these conditions are met:
     # - Commit message does not contains #no-publish
     # - The test step ended successfully
@@ -292,21 +294,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Download built app from artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: built-app
-          path: docs
 
-      - name: Deploy to GitHub Pages
-        uses: crazy-max/ghaction-github-pages@v2
-        with:
-          target_branch: gh-pages
-          build_dir: docs
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Download built app from artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: built-app
+        path: docs
 
-      # Delete the built app artifact: it's no needed anymore
-      - uses: geekyeggo/delete-artifact@v1
-        with:
-          name: built-app
+    - name: Deploy to GitHub Pages
+      uses: crazy-max/ghaction-github-pages@v2
+      with:
+        target_branch: gh-pages
+        build_dir: docs
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    # Delete the built app artifact: it's no needed anymore
+    - uses: geekyeggo/delete-artifact@v1
+      with:
+        name: built-app
