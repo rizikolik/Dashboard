@@ -25,9 +25,9 @@ jobs:
             - name: run linting
             - name: run tests
               run: yarn test
-              - name: run coneverage
+            - name: run coneverage
               run: yarn test:coverage
-              - name: run badges
+            - name: run badges
               run: yarn test:badges  
             - name: build code
               run: yarn build
